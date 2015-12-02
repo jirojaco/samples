@@ -1,2 +1,2 @@
 # samples
-C language sample source code
+sample source code

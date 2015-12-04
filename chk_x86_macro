@@ -1,0 +1,12 @@
+#include <stdio.h>
+
+void main()
+{
+
+    #ifdef __x86_64__
+        printf("This is x86_64 script\n");
+    #else
+        printf("This is x86 script\n");
+    #endif
+
+}

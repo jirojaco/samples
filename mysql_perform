@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <string.h>
+#include <sys/time.h>
+#include "/usr/include/mysql/mysql.h"
+
+//#
+//# gcc -o mysql_c mysql_c.c -L/usr/lib64/mysql -lmysqlclient
+//#
+
+void    main(int argc, char *argv[])  {
+    struct timeval start_timeval, end_timeval;
+    double sec_timeofday;
+    unsigned char db_address[128];
+
+    int i=0;
+
+    gettimeofday( &start_timeval, NULL );
+//
+    // MySQL
+    MYSQL sql_server;
+    MYSQL *d_mysql=NULL;
+    MYSQL_RES *res;
+    MYSQL_ROW sql_row;
+    int error;
+    char temp[1024];
+    char temp_buff[256];
+
+//  printf("%s(%d)\n\r",__func__, __LINE__);
+
+    if (argc < 3)
+        err(stdout, "Usage: %s <ID> <Password> (<DB IP Address>)", argv[0]);
+
+    if (argc >= 4)
+        strcpy(db_address, argv[3]);
+    else
+        strcpy(db_address, "localhost") ;
+
+
+    // MySQL Initialize
+    if(!mysql_init(&sql_server))
+        err("Initialize Error");
+
+    // MySQL Try to connect Server
+    d_mysql = mysql_real_connect(&sql_server,db_address,argv[1],argv[2],"epcisim",0,NULL,0);
+    if(!d_mysql)
+            err("MySQL can't be connected");
+    else {
+            printf("MySQL can be connected!\n\r");
+        fflush(stdout);
+    }
+
+//  sprintf(temp,"select * from EPC_UE_Properties where IMSI = 440100000000204;\0");
+    for(i=1000;i<3000;i++) {
+        sprintf(temp,"update EPC_UE_Properties SET MME_UE_S1_AP_ID=%d, ENB_UE_S1_AP_ID=%d where IMSI = %ld;\0", i+1,i+1001,440100000000001L+(long)i);
+
+        if( mysql_query(d_mysql,temp)) {
+            printf("mysql_query() Error : %s\n\r",mysql_error(d_mysql));
+        } else {
+        //  printf("mysql_query() Normal : %s\n\r",mysql_error(d_mysql));
+        }
+    }
+    mysql_close(&sql_server);
+
+//
+    gettimeofday( &end_timeval, NULL );
+    sec_timeofday = (end_timeval.tv_sec - start_timeval.tv_sec)
+            + (end_timeval.tv_usec - start_timeval.tv_usec) / 1000000.0;
+    printf("sec : %f\n", sec_timeofday);
+
+}

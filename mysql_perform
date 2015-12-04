@@ -6,7 +6,6 @@
 //#
 //# gcc -o mysql_c mysql_c.c -L/usr/lib64/mysql -lmysqlclient
 //#
-
 void    main(int argc, char *argv[])  {
     struct timeval start_timeval, end_timeval;
     double sec_timeofday;

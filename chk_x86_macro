@@ -9,4 +9,11 @@ void main()
         printf("This is x86 script\n");
     #endif
 
+
+    #if LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,16)
+        printf("Under linux kernel 2,6,16\n");
+    #else
+        printf("Over linux kernel 2,6,16\n");
+    #endif
+    
 }
